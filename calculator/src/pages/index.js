@@ -12,21 +12,33 @@ export default function Home() {
   const [currentNumber, setCurrentNumber] = useState("0");
   const [firstNumber, setFirstNumber] = useState(null);
   const [operation, setOperation] = useState(null);
+  const [resultDisplayed, setResultDisplayed] = useState(false);
 
   const handleAddNumber = (num) => {
-    setCurrentNumber((prev) =>
-      prev === "0" ? num : prev + num
-    );
+    // Se um resultado foi exibido, inicia nova entrada
+    if (resultDisplayed) {
+      setCurrentNumber(num);
+      setResultDisplayed(false);
+    } else {
+      setCurrentNumber((prev) =>
+        prev === "0" ? num : prev + num
+      );
+    }
   };
 
   const handleOnClear = () => {
     setCurrentNumber("0");
     setFirstNumber(null);
     setOperation(null);
+    setResultDisplayed(false);
   };
 
   const handleAddDot = () => {
-    if (!currentNumber.includes(".")) {
+    // Se resultado foi exibido, inicia novo número com "0."
+    if (resultDisplayed) {
+      setCurrentNumber("0.");
+      setResultDisplayed(false);
+    } else if (!currentNumber.includes(".")) {
       setCurrentNumber((prev) => prev + ".");
     }
   };
@@ -35,25 +47,43 @@ export default function Home() {
     setFirstNumber(currentNumber);
     setCurrentNumber("0");
     setOperation("+");
+    setResultDisplayed(false); // Limpa flag ao escolher operação
   };
 
   const handleMinusNumbers = () => {
     setFirstNumber(currentNumber);
     setCurrentNumber("0");
     setOperation("-");
+    setResultDisplayed(false);
   };
 
   const handleMultiNumbers = () => {
     setFirstNumber(currentNumber);
     setCurrentNumber("0");
     setOperation("*");
+    setResultDisplayed(false);
   };
 
   const handleDiviNumbers = () => {
     setFirstNumber(currentNumber);
     setCurrentNumber("0");
     setOperation("/");
+    setResultDisplayed(false);
   };
+
+  const handleModNumbers = () => {
+    setFirstNumber(currentNumber);
+    setCurrentNumber("0");
+    setOperation("MOD");
+    setResultDisplayed(false);
+  }
+
+  const handlePercentNumbers = () => {
+    setFirstNumber(currentNumber);
+    setCurrentNumber("0");
+    setOperation("PERCENT");
+    setResultDisplayed(false);
+  }
 
   const handleEquals = () => {
     if (!firstNumber || !operation) return;
@@ -65,10 +95,12 @@ export default function Home() {
     if (operation === "-") result = num1 - num2;
     if (operation === "*") result = num1 * num2;
     if (operation === "/") result = num1 / num2;
+    if (operation === "PERCENT") result = (num1 * num2) / 100;
 
     setCurrentNumber(result.toString());
     setOperation(null);
     setFirstNumber(null);
+    setResultDisplayed(true); // Marca que resultado foi exibido
   };
 
   return (
@@ -83,28 +115,33 @@ export default function Home() {
           <Header></Header>
           <Input value={currentNumber} />
           <Row>
-            <Button label="x" onClick={handleMultiNumbers} />
-            <Button label="/" onClick={handleDiviNumbers} />
-            <Button label="CE" onClick={handleOnClear} />
-            <Button label="." onClick={handleAddDot}/>
+            <Button label="%" onClick={handlePercentNumbers} variant="action" />
+            <Button label="/" onClick={handleDiviNumbers} variant="action" />
+            <Button label="MOD" onClick={handleModNumbers} variant="action" />
+            <Button label="CE" onClick={handleOnClear} variant="action" />
           </Row>
           <Row>
             <Button label="7" onClick={() => handleAddNumber('7')} />
             <Button label="8" onClick={() => handleAddNumber('8')} />
             <Button label="9" onClick={() => handleAddNumber('9')} />
-            <Button label="-" onClick={handleMinusNumbers} />
+            <Button label="x" onClick={handleMultiNumbers} variant="action" />
           </Row>
           <Row>
             <Button label="4" onClick={() => handleAddNumber('4')} />
             <Button label="5" onClick={() => handleAddNumber('5')} />
             <Button label="6" onClick={() => handleAddNumber('6')} />
-            <Button label="+" onClick={handleSumNumbers} />
+            <Button label="-" onClick={handleMinusNumbers} variant="action" />
           </Row>
           <Row>
             <Button label="1" onClick={() => handleAddNumber('1')} />
             <Button label="2" onClick={() => handleAddNumber('2')} />
             <Button label="3" onClick={() => handleAddNumber('3')} />
-            <Button label="=" onClick={handleEquals} />
+            <Button label="+" onClick={handleSumNumbers} variant="action" />
+          </Row>
+          <Row>
+            <Button label="0" onClick={() => handleAddNumber('0')} />
+            <Button label="." onClick={handleAddDot} />
+            <Button label="=" onClick={handleEquals} span={2} variant="equal" />
           </Row>
         </Content>
       </Container>
