@@ -95,6 +95,7 @@ export default function Home() {
     if (operation === "-") result = num1 - num2;
     if (operation === "*") result = num1 * num2;
     if (operation === "/") result = num1 / num2;
+    if (operation === "MOD") result = num1 % num2;
     if (operation === "PERCENT") result = (num1 * num2) / 100;
 
     setCurrentNumber(result.toString());
